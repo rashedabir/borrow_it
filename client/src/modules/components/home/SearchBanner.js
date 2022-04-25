@@ -1,6 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
+import location from "../../../assets/fakeData/state.json";
 
 export const SearchBanner = () => {
+  const [cities, setCities] = useState({});
+  const [selectedState, setSelectedState] = useState("");
+  const [selectedCity, setSelectedCity] = useState("");
+
   return (
     <section id="banner_start">
       <div className="container">
@@ -18,7 +23,11 @@ export const SearchBanner = () => {
             data-bs-target="#exampleModal"
           >
             <i className="fa-solid fa-location-dot"></i>
-            <span>All of Bangladesh</span>
+            <span>
+              {selectedState || selectedCity
+                ? ` ${selectedState}${selectedCity ? ", " + selectedCity : ""}`
+                : " All of Bangladesh"}
+            </span>
           </button>
         </div>
 
@@ -35,11 +44,20 @@ export const SearchBanner = () => {
                 <div className="row">
                   <div className="col-lg-6">
                     <h3>Select City or Division</h3>
-                    <p>All of Bangladesh</p>
+                    <p>
+                      {selectedState || selectedCity
+                        ? `${selectedState}${
+                            selectedCity ? ", " + selectedCity : ""
+                          }`
+                        : "All of Bangladesh"}
+                    </p>
                   </div>
                   <div className="col-lg-6">
-                    <h3>Select a local area within Dhaka</h3>
-                    <p>Popular areas</p>
+                    <h3>
+                      {selectedState &&
+                        `Select a local area within ${selectedState}`}
+                    </h3>
+                    {selectedState && <p>Popular areas</p>}
                     <button
                       type="button"
                       className="btn-close"
@@ -61,102 +79,29 @@ export const SearchBanner = () => {
                       role="tablist"
                       aria-orientation="vertical"
                     >
-                      <button
-                        className="nav-link active"
-                        id="v-pills-home-tab"
-                        data-bs-toggle="pill"
-                        data-bs-target="#v-pills-home"
-                        type="button"
-                        role="tab"
-                        aria-controls="v-pills-home"
-                        aria-selected="true"
-                      >
-                        Dhaka <i className="fa-solid fa-angle-right"></i>
-                      </button>
-                      <button
-                        className="nav-link"
-                        id="v-pills-profile-tab"
-                        data-bs-toggle="pill"
-                        data-bs-target="#v-pills-profile"
-                        type="button"
-                        role="tab"
-                        aria-controls="v-pills-profile"
-                        aria-selected="false"
-                      >
-                        Chattogram <i className="fa-solid fa-angle-right"></i>
-                      </button>
-                      <button
-                        className="nav-link"
-                        id="v-pills-messages-tab"
-                        data-bs-toggle="pill"
-                        data-bs-target="#v-pills-messages"
-                        type="button"
-                        role="tab"
-                        aria-controls="v-pills-messages"
-                        aria-selected="false"
-                      >
-                        Sylhet <i className="fa-solid fa-angle-right"></i>
-                      </button>
-                      <button
-                        className="nav-link"
-                        id="v-pills-settings-tab_4"
-                        data-bs-toggle="pill"
-                        data-bs-target="#v-pills-settings_4"
-                        type="button"
-                        role="tab"
-                        aria-controls="v-pills-settings_4"
-                        aria-selected="false"
-                      >
-                        Khulna <i className="fa-solid fa-angle-right"></i>
-                      </button>
-                      <button
-                        className="nav-link"
-                        id="v-pills-settings-tab_5"
-                        data-bs-toggle="pill"
-                        data-bs-target="#v-pills-settings_5"
-                        type="button"
-                        role="tab"
-                        aria-controls="v-pills-settings_5"
-                        aria-selected="false"
-                      >
-                        Barishal <i className="fa-solid fa-angle-right"></i>
-                      </button>
-                      <button
-                        className="nav-link"
-                        id="v-pills-settings-tab_6"
-                        data-bs-toggle="pill"
-                        data-bs-target="#v-pills-settings_6"
-                        type="button"
-                        role="tab"
-                        aria-controls="v-pills-settings_6"
-                        aria-selected="false"
-                      >
-                        Rajshahi <i className="fa-solid fa-angle-right"></i>
-                      </button>
-                      <button
-                        className="nav-link"
-                        id="v-pills-settings-tab_7"
-                        data-bs-toggle="pill"
-                        data-bs-target="#v-pills-settings_7"
-                        type="button"
-                        role="tab"
-                        aria-controls="v-pills-settings_7"
-                        aria-selected="false"
-                      >
-                        Rangpur <i className="fa-solid fa-angle-right"></i>
-                      </button>
-                      <button
-                        className="nav-link"
-                        id="v-pills-settings-tab_8"
-                        data-bs-toggle="pill"
-                        data-bs-target="#v-pills-settings_8"
-                        type="button"
-                        role="tab"
-                        aria-controls="v-pills-settings_8"
-                        aria-selected="false"
-                      >
-                        Mymensingh <i className="fa-solid fa-angle-right"></i>
-                      </button>
+                      {location &&
+                        location.length > 0 &&
+                        location.map((item, i) => (
+                          <button
+                            key={i}
+                            className={i === 0 ? "nav-link" : "nav-link"}
+                            id={`${item.stateName}-tab`}
+                            data-bs-toggle="pill"
+                            data-bs-target={`#${item.stateName}`}
+                            type="button"
+                            role="tab"
+                            aria-controls={item.stateName}
+                            aria-selected="true"
+                            onClick={() => {
+                              setSelectedCity("");
+                              setCities(item);
+                              setSelectedState(item.stateName);
+                            }}
+                          >
+                            {item.stateName}{" "}
+                            <i className="fa-solid fa-angle-right"></i>
+                          </button>
+                        ))}
                       <p className="divisions">
                         Divisions <i className="fa-solid fa-angle-down"></i>
                       </p>
@@ -268,154 +213,35 @@ export const SearchBanner = () => {
                   </div>
 
                   <div className="col-lg-6">
-                    <div
-                      className="tab-content popular_arieas"
-                      id="v-pills-tabContent"
-                    >
+                    {cities && Object.keys(cities).length > 0 && (
                       <div
-                        className="tab-pane fade show active"
-                        id="v-pills-home"
-                        role="tabpanel"
-                        aria-labelledby="v-pills-home-tab"
+                        className="tab-content popular_arieas"
+                        id="v-pills-tabContent"
                       >
-                        <ul>
-                          <li>All of Dhaka</li>
-                          <li>Dhanmondi</li>
-                          <li>Mohammadpur</li>
-                          <li>Mirpur</li>
-                          <li>Uttara</li>
-                          <li>Savar</li>
-                          <p>Select other areas (A-Z)</p>
-                          <select>
-                            <option value="">ami 1</option>
-                            <option value="">ami 2</option>
-                            <option value="">ami 3</option>
-                            <option value="">ami 4</option>
-                          </select>
-                        </ul>
+                        <div
+                          className="tab-pane fade show active"
+                          id={cities.stateName}
+                          role="tabpanel"
+                          aria-labelledby={`${cities.stateName}-tab`}
+                        >
+                          <ul>
+                            <li>All of {selectedState}</li>
+                            {cities.cities &&
+                              cities.cities.length > 0 &&
+                              cities.cities.map((item, i, row) => (
+                                <li
+                                  key={i}
+                                  onClick={() => {
+                                    setSelectedCity(item.cityName);
+                                  }}
+                                >
+                                  {item.cityName}
+                                </li>
+                              ))}
+                          </ul>
+                        </div>
                       </div>
-                      <div
-                        className="tab-pane fade"
-                        id="v-pills-profile"
-                        role="tabpanel"
-                        aria-labelledby="v-pills-profile-tab"
-                      >
-                        2
-                      </div>
-                      <div
-                        className="tab-pane fade"
-                        id="v-pills-messages"
-                        role="tabpanel"
-                        aria-labelledby="v-pills-messages-tab"
-                      >
-                        3
-                      </div>
-                      <div
-                        className="tab-pane fade"
-                        id="v-pills-settings_4"
-                        role="tabpanel"
-                        aria-labelledby="v-pills-settings-tab_4"
-                      >
-                        4
-                      </div>
-
-                      <div
-                        className="tab-pane fade"
-                        id="v-pills-settings_5"
-                        role="tabpanel"
-                        aria-labelledby="v-pills-settings-tab_5"
-                      >
-                        5
-                      </div>
-                      <div
-                        className="tab-pane fade"
-                        id="v-pills-settings_6"
-                        role="tabpanel"
-                        aria-labelledby="v-pills-settings-tab_6"
-                      >
-                        6
-                      </div>
-                      <div
-                        className="tab-pane fade"
-                        id="v-pills-settings_7"
-                        role="tabpanel"
-                        aria-labelledby="v-pills-settings-tab_7"
-                      >
-                        7
-                      </div>
-                      <div
-                        className="tab-pane fade"
-                        id="v-pills-settings_8"
-                        role="tabpanel"
-                        aria-labelledby="v-pills-settings-tab_8"
-                      >
-                        8
-                      </div>
-                      <div
-                        className="tab-pane fade"
-                        id="v-pills-settings_9"
-                        role="tabpanel"
-                        aria-labelledby="v-pills-settings-tab_9"
-                      >
-                        9
-                      </div>
-                      <div
-                        className="tab-pane fade"
-                        id="v-pills-settings_10"
-                        role="tabpanel"
-                        aria-labelledby="v-pills-settings-tab_10"
-                      >
-                        10
-                      </div>
-                      <div
-                        className="tab-pane fade"
-                        id="v-pills-settings_11"
-                        role="tabpanel"
-                        aria-labelledby="v-pills-settings-tab_11"
-                      >
-                        11
-                      </div>
-                      <div
-                        className="tab-pane fade"
-                        id="v-pills-settings_12"
-                        role="tabpanel"
-                        aria-labelledby="v-pills-settings-tab_12"
-                      >
-                        12
-                      </div>
-                      <div
-                        className="tab-pane fade"
-                        id="v-pills-settings_13"
-                        role="tabpanel"
-                        aria-labelledby="v-pills-settings-tab_13"
-                      >
-                        3
-                      </div>
-                      <div
-                        className="tab-pane fade"
-                        id="v-pills-settings_14"
-                        role="tabpanel"
-                        aria-labelledby="v-pills-settings-tab_14"
-                      >
-                        14
-                      </div>
-                      <div
-                        className="tab-pane fade"
-                        id="v-pills-settings_15"
-                        role="tabpanel"
-                        aria-labelledby="v-pills-settings-tab_15"
-                      >
-                        15
-                      </div>
-                      <div
-                        className="tab-pane fade"
-                        id="v-pills-settings_16"
-                        role="tabpanel"
-                        aria-labelledby="v-pills-settings-tab_16"
-                      >
-                        16
-                      </div>
-                    </div>
+                    )}
                   </div>
                 </div>
               </div>

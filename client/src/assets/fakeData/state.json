@@ -1,0 +1,141 @@
+[
+  {
+    "stateName": "Dhaka",
+    "cities": [
+      {
+        "cityName": "Dhanmondi"
+      },
+      {
+        "cityName": "Mohammodpur"
+      },
+      {
+        "cityName": "Mirpur"
+      },
+      {
+        "cityName": "Uttara"
+      },
+      {
+        "cityName": "Savar"
+      }
+    ]
+  },
+  {
+    "stateName": "Chotttogram",
+    "cities": [
+      {
+        "cityName": "Cumilla"
+      },
+      {
+        "cityName": "Noakhali"
+      },
+      {
+        "cityName": "Feni"
+      },
+      {
+        "cityName": "Chadpur"
+      }
+    ]
+  },
+  {
+    "stateName": "Sylhet",
+    "cities": [
+      {
+        "cityName": "Cumilla"
+      },
+      {
+        "cityName": "Noakhali"
+      },
+      {
+        "cityName": "Feni"
+      },
+      {
+        "cityName": "Chadpur"
+      }
+    ]
+  },
+  {
+    "stateName": "Khulna",
+    "cities": [
+      {
+        "cityName": "Cumilla"
+      },
+      {
+        "cityName": "Noakhali"
+      },
+      {
+        "cityName": "Feni"
+      },
+      {
+        "cityName": "Chadpur"
+      }
+    ]
+  },
+  {
+    "stateName": "Barishal",
+    "cities": [
+      {
+        "cityName": "Cumilla"
+      },
+      {
+        "cityName": "Noakhali"
+      },
+      {
+        "cityName": "Feni"
+      },
+      {
+        "cityName": "Chadpur"
+      }
+    ]
+  },
+  {
+    "stateName": "Rajshahi",
+    "cities": [
+      {
+        "cityName": "Cumilla"
+      },
+      {
+        "cityName": "Noakhali"
+      },
+      {
+        "cityName": "Feni"
+      },
+      {
+        "cityName": "Chadpur"
+      }
+    ]
+  },
+  {
+    "stateName": "Rangpur",
+    "cities": [
+      {
+        "cityName": "Cumilla"
+      },
+      {
+        "cityName": "Noakhali"
+      },
+      {
+        "cityName": "Feni"
+      },
+      {
+        "cityName": "Chadpur"
+      }
+    ]
+  },
+  {
+    "stateName": "Mymensingh",
+    "cities": [
+      {
+        "cityName": "Cumilla"
+      },
+      {
+        "cityName": "Noakhali"
+      },
+      {
+        "cityName": "Feni"
+      },
+      {
+        "cityName": "Chadpur"
+      }
+    ]
+  }
+]

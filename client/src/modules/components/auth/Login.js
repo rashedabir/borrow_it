@@ -68,12 +68,15 @@ export const Login = () => {
                       />
                       <label htmlFor="floatingPassword">Password</label>
                     </div>
-                    <button type="submit">login</button>
+                    <button className="me-2" type="submit">
+                      login
+                    </button>
 
                     <button
                       type="button"
                       data-bs-toggle="modal"
                       data-bs-target="#staticForgot"
+                      className="ms-2"
                     >
                       Forgot password?
                     </button>

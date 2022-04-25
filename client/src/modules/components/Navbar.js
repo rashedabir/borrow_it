@@ -25,14 +25,14 @@ export const Navbar = () => {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
-              <a
+              <Link
                 className="nav-link active"
                 aria-current="page"
-                target="_blank"
+                to="/privacy-&-policy"
                 href="privacy_policy.html"
               >
                 Privacy
-              </a>
+              </Link>
             </li>
             <li className="nav-item">
               <a className="nav-link" href="#footer">
