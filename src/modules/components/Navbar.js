@@ -1,7 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useRecoilValue } from "recoil";
+import useUserActions from "../../_recoil/actions/auth.actions";
+import { authAtom } from "../../_recoil/state";
 
 export const Navbar = () => {
+  const profileInfo = useRecoilValue(authAtom);
+  const userAction = useUserActions();
+
   return (
     <nav
       id="main_menu"
@@ -41,20 +47,40 @@ export const Navbar = () => {
             </li>
           </ul>
 
-          <div
-            className="menu_btn"
-            data-bs-toggle="modal"
-            data-bs-target="#staticBackdrop"
-          >
-            <i className="fa-solid fa-user-plus"></i> sign up
-          </div>
-          <div
-            className="menu_btn menu_btn2"
-            data-bs-toggle="modal"
-            data-bs-target="#staticLogin"
-          >
-            <i className="fa-solid fa-right-to-bracket"></i> Log in
-          </div>
+          {profileInfo ? (
+            <>
+              <Link className="menu_btn menu_btn2" to="/dashboard">
+                Dashboard
+              </Link>
+              <div
+                className="menu_btn"
+                data-bs-toggle="modal"
+                data-bs-target="#staticLogin"
+                onClick={() => {
+                  userAction.logout();
+                }}
+              >
+                <i className="fa-solid fa-right-to-bracket"></i> Log Out
+              </div>
+            </>
+          ) : (
+            <>
+              <div
+                className="menu_btn"
+                data-bs-toggle="modal"
+                data-bs-target="#staticBackdrop"
+              >
+                <i className="fa-solid fa-user-plus"></i> sign up
+              </div>
+              <div
+                className="menu_btn menu_btn2"
+                data-bs-toggle="modal"
+                data-bs-target="#staticLogin"
+              >
+                <i className="fa-solid fa-right-to-bracket"></i> Log in
+              </div>
+            </>
+          )}
         </div>
       </div>
     </nav>

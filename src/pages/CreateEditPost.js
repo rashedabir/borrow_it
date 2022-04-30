@@ -12,12 +12,12 @@ export const CreateEditPost = () => {
                 <div className="condition">
                   <div className="left">
                     <input type="radio" id="lala" name="ami" />
-                    <label for="lala">Used</label>
+                    <label htmlFor="lala">Used</label>
                   </div>
 
                   <div className="right">
                     <input type="radio" name="ami" id="new" />
-                    <label for="new">New</label>
+                    <label htmlFor="new">New</label>
                   </div>
                 </div>
               </div>
@@ -27,12 +27,12 @@ export const CreateEditPost = () => {
                 <div className="condition">
                   <div className="left">
                     <input type="radio" id="original" name="ami2" />
-                    <label for="original">Original</label>
+                    <label htmlFor="original">Original</label>
                   </div>
 
                   <div className="right">
                     <input type="radio" name="ami2" id="Refurbished" />
-                    <label for="Refurbished">Refurbished</label>
+                    <label htmlFor="Refurbished">Refurbished</label>
                   </div>
                 </div>
               </div>
@@ -86,7 +86,7 @@ export const CreateEditPost = () => {
                   <div
                     className="modal fade"
                     id="exampleModal"
-                    tabindex="-1"
+                    tabIndex="-1"
                     aria-labelledby="exampleModalLabel"
                     aria-hidden="true"
                   >
@@ -528,7 +528,10 @@ export const CreateEditPost = () => {
 
                 <div className="main">
                   <div className="mb-3 left">
-                    <label for="exampleInputPassword1" className="form-label">
+                    <label
+                      htmlFor="exampleInputPassword1"
+                      className="form-label"
+                    >
                       Phone-1
                     </label>
                     <input
@@ -539,7 +542,10 @@ export const CreateEditPost = () => {
                     />
                   </div>
                   <div className="mb-3 right">
-                    <label for="exampleInputPassword1" className="form-label">
+                    <label
+                      htmlFor="exampleInputPassword1"
+                      className="form-label"
+                    >
                       Phone-2
                     </label>
                     <input

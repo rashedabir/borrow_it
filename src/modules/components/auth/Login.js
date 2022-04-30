@@ -1,6 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
+import { Field, Form, Formik } from "formik";
+import * as Yup from "yup";
+import { useUserActions } from "../../../_recoil/actions";
+
+const init = {
+  name: "",
+  email: "",
+  password: "",
+  rePassword: "",
+};
 
 export const Login = () => {
+  const userAction = useUserActions();
+  const [loading, setLoading] = useState(false);
+
+  // Validation schema
+  const validationSchema = Yup.object().shape({
+    email: Yup.string().required("Email is required"),
+    password: Yup.string().required("Password is required"),
+  });
+
   return (
     <div
       className="modal fade"
@@ -47,40 +66,77 @@ export const Login = () => {
               </div>
               <div className="col-lg-7">
                 <div id="reg_input">
-                  <form action="#" id="rony">
-                    <div className="form-floating mb-3">
-                      <input
-                        type="email"
-                        className="form-control"
-                        id="floatingInput"
-                        placeholder="name@example.com"
-                        autoComplete="off"
-                      />
-                      <label htmlFor="floatingInput">Email</label>
-                    </div>
-                    <div className="form-floating mb-3">
-                      <input
-                        type="password"
-                        className="form-control"
-                        id="floatingPassword"
-                        placeholder="Password"
-                        autoComplete="off"
-                      />
-                      <label htmlFor="floatingPassword">Password</label>
-                    </div>
-                    <button className="me-2" type="submit">
-                      login
-                    </button>
+                  <Formik
+                    initialValues={init}
+                    enableReinitialize={true}
+                    validationSchema={validationSchema}
+                    onSubmit={(values) => {
+                      setLoading(true);
+                      userAction.login(values);
+                      setLoading(false);
+                    }}
+                  >
+                    {({
+                      handleSubmit,
+                      setFieldValue,
+                      values,
+                      errors,
+                      touched,
+                    }) => {
+                      return (
+                        <Form id="rony" className="needs-validation">
+                          <div className="form-floating mb-3">
+                            <Field
+                              type="email"
+                              className="form-control"
+                              id="floatingInput"
+                              name="email"
+                              placeholder="name@example.com"
+                              autoComplete="off"
+                            />
+                            <label htmlFor="floatingInput">Email</label>
+                            {errors?.email && touched?.email && (
+                              <div className="invalid-feedback">
+                                {errors.email}
+                              </div>
+                            )}
+                          </div>
+                          <div className="form-floating mb-3">
+                            <Field
+                              type="password"
+                              name="password"
+                              className="form-control"
+                              id="floatingPassword"
+                              placeholder="Password"
+                              autoComplete="off"
+                            />
+                            <label htmlFor="floatingPassword">Password</label>
+                            {errors?.password && touched?.password && (
+                              <div className="invalid-feedback">
+                                {errors.password}
+                              </div>
+                            )}
+                          </div>
+                          <button className="me-2" type="submit">
+                            login
+                          </button>
 
-                    <button
-                      type="button"
-                      data-bs-toggle="modal"
-                      data-bs-target="#staticForgot"
-                      className="ms-2"
-                    >
-                      Forgot password?
-                    </button>
-                  </form>
+                          <button
+                            type="button"
+                            data-bs-toggle="modal"
+                            data-bs-target="#staticForgot"
+                            className="ms-2"
+                            onClick={() => {
+                              handleSubmit();
+                            }}
+                            disabled={loading}
+                          >
+                            Forgot password?
+                          </button>
+                        </Form>
+                      );
+                    }}
+                  </Formik>
                 </div>
               </div>
             </div>
