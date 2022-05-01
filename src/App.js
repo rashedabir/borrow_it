@@ -49,10 +49,7 @@ function App() {
             path="/product-details/:product_id"
             element={<ProductDetails />}
           />
-          <Route
-            path="/category-details/:category_id"
-            element={<CategoryDetails />}
-          />
+          <Route path="/category-details/:slug" element={<CategoryDetails />} />
         </Routes>
       </MainLayout>
     </BrowserRouter>

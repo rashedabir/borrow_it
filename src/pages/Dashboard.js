@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { authAtom } from "../_recoil/state";
@@ -10,6 +10,7 @@ export const Dashboard = () => {
   const profileInfo = useRecoilValue(authAtom);
   const token = localStorage.getItem("token");
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   // delete product image
   const handleDestroy = async (image) => {
@@ -55,10 +56,12 @@ export const Dashboard = () => {
   useEffect(() => {
     // get products
     const getProducts = async () => {
+      setLoading(true);
       await API.get("/user/product")
         .then((res) => {
           if (res.status === 200) {
             setProducts(res.data);
+            setLoading(false);
           }
         })
         .catch((error) => {
@@ -71,57 +74,69 @@ export const Dashboard = () => {
   }, [token]);
 
   return (
-    <section id="post_part">
-      <div className="container">
-        <div className="item">
-          <div className="row">
-            <div className="col-lg-4">
-              <h2>{profileInfo?.name}</h2>
-              <div className="add_post_btn">
-                <Link to="/create-post">Post your ad now!</Link>
+    <Fragment>
+      {loading ? (
+        <div className="loading"></div>
+      ) : (
+        <section id="post_part">
+          <div className="container">
+            <div className="item">
+              <div className="row">
+                <div className="col-lg-4">
+                  <h2 className="text-capitalize">{profileInfo?.name}</h2>
+                  <div className="add_post_btn">
+                    <Link to="/create-post">Post your ad now!</Link>
+                  </div>
+                </div>
+
+                <div className="col-lg-8">
+                  <h3>My Post</h3>
+                  {products &&
+                    products.length > 0 &&
+                    products
+                      .slice(0)
+                      .reverse()
+                      .map((item, i) => (
+                        <div className="post_item_link" key={i}>
+                          <div className="post_item">
+                            <div className="img">
+                              <img
+                                src={item?.images[0]?.url}
+                                alt={item?.title}
+                              />
+                            </div>
+                            <div className="text">
+                              <Link to={`/product-details/${item?._id}`}>
+                                <h3>{item?.title}</h3>
+                              </Link>
+
+                              <p>
+                                <i className="fa-solid fa-location-dot"></i>{" "}
+                                {item?.division}
+                                {item?.state && ","} {item?.state}
+                              </p>
+                              <h4 className="price">
+                                {item?.price} <span>Tk/day</span>
+                              </h4>
+                            </div>
+                            <div
+                              className="delete_btn"
+                              onClick={() => {
+                                handleDeleteProduct(item?._id, item);
+                              }}
+                            >
+                              <button>Delete Ad ??</button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                </div>
               </div>
             </div>
-
-            <div className="col-lg-8">
-              <h3>My Post</h3>
-              {products &&
-                products.length > 0 &&
-                products
-                  .slice(0)
-                  .reverse()
-                  .map((item, i) => (
-                    <div className="post_item_link" key={i}>
-                      <div className="post_item">
-                        <div className="img">
-                          <img src={item?.images[0]?.url} alt={item?.title} />
-                        </div>
-                        <div className="text">
-                          <h3>{item?.title}</h3>
-                          <p>
-                            <i className="fa-solid fa-location-dot"></i>{" "}
-                            {item?.division}
-                            {item?.state && ","} {item?.state}
-                          </p>
-                          <h4 className="price">
-                            {item?.damageWaiver} <span>Tk/day</span>
-                          </h4>
-                        </div>
-                        <div
-                          className="delete_btn"
-                          onClick={() => {
-                            handleDeleteProduct(item?._id, item);
-                          }}
-                        >
-                          <button>Delete Ad ??</button>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-            </div>
           </div>
-        </div>
-      </div>
-    </section>
+        </section>
+      )}
+    </Fragment>
   );
 };
 

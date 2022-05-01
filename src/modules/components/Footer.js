@@ -62,23 +62,26 @@ export const Footer = () => {
             </div>
             <div className="col-lg-3 contact link">
               <h3>Contact</h3>
-              <a href="tel:01717246139">
-                <i className="fa-solid fa-phone"></i> 01717246139
+              <a href="tel:01629341869">
+                <i className="fa-solid fa-phone"></i> 01629341969
               </a>
-              <a href="tel:01910175050">
-                <i className="fa-solid fa-phone"></i> 01910175050
+              <a href="tel:01629341869">
+                <i className="fa-solid fa-phone"></i> 01629341869
               </a>
-              <a href="mailto:ronytalukder0014@gmailcom">
+              <a href="mailto:abir@m4yours.com">
                 <i className="fa-solid fa-envelope-circle-check"></i>
-                ronytalukder0014@gmailcom
+                abir@m4yours.com
               </a>
             </div>
           </div>
         </div>
       </section>
       <section id="copyright">
-        <p>
+        {/*<p>
           Copyright © <a href="!#">Borrow it</a>
+        </p>*/}
+        <p>
+          Developed by © <a href="!#">Rashed Abir</a>
         </p>
       </section>
     </Fragment>
