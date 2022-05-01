@@ -61,7 +61,7 @@ export function swalSuccess(
 ) {
   try {
     let result = "";
-    if ($html != false) {
+    if ($html !== false) {
       result = Swal.fire({
         icon: "success",
         title: $title,

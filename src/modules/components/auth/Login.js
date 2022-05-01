@@ -117,7 +117,14 @@ export const Login = () => {
                               </div>
                             )}
                           </div>
-                          <button className="me-2" type="submit">
+                          <button
+                            className="me-2"
+                            disabled={loading}
+                            onClick={() => {
+                              handleSubmit();
+                            }}
+                            type="button"
+                          >
                             login
                           </button>
 
@@ -126,9 +133,6 @@ export const Login = () => {
                             data-bs-toggle="modal"
                             data-bs-target="#staticForgot"
                             className="ms-2"
-                            onClick={() => {
-                              handleSubmit();
-                            }}
                             disabled={loading}
                           >
                             Forgot password?

@@ -1,14 +1,56 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useRecoilValue } from "recoil";
-import image from "../assets/images/watch.jpg";
 import { authAtom } from "../_recoil/state";
 import API from "../utils/devApi";
+import { swalConfirm, swalError, swalSuccess } from "../utils/swal";
+import { toast } from "react-toastify";
 
 export const Dashboard = () => {
   const profileInfo = useRecoilValue(authAtom);
   const token = localStorage.getItem("token");
   const [products, setProducts] = useState([]);
+
+  // delete product image
+  const handleDestroy = async (image) => {
+    try {
+      if (image.length > 0) {
+        for (let i = 0; i < image.length; i++) {
+          await API.post("/api/media/destroy", {
+            public_id: image[i].public_id,
+          });
+        }
+      }
+    } catch (err) {
+      toast.error(err.response.data.msg);
+    }
+  };
+
+  // handle delete product
+  const handleDeleteProduct = async (id, product) => {
+    swalConfirm(
+      "You won't be able to revert this!",
+      "Are you sure?",
+      "Yes, delete it!"
+    ).then(async (result) => {
+      if (result.isConfirmed) {
+        await API.delete(`/api/product/${id}`)
+          .then(async (res) => {
+            if (res.status === 200) {
+              await handleDestroy(product?.images);
+              const data = products.filter((item) => item?._id !== id);
+              setProducts(data);
+              swalSuccess("Product Deleted");
+            } else {
+              swalError("something went wrong");
+            }
+          })
+          .catch((err) => {
+            swalError(err.response.data.msg);
+          });
+      }
+    });
+  };
 
   useEffect(() => {
     // get products
@@ -17,7 +59,6 @@ export const Dashboard = () => {
         .then((res) => {
           if (res.status === 200) {
             setProducts(res.data);
-            console.log(res);
           }
         })
         .catch((error) => {
@@ -45,28 +86,37 @@ export const Dashboard = () => {
               <h3>My Post</h3>
               {products &&
                 products.length > 0 &&
-                products.map((item, i) => (
-                  <div className="post_item_link" key={i}>
-                    <div className="post_item">
-                      <div className="img">
-                        <img src={image} alt="" />
-                      </div>
-                      <div className="text">
-                        <h3>Diesel hand watch</h3>
-                        <p>
-                          <i className="fa-solid fa-location-dot"></i> Dhaka,
-                          Uttara
-                        </p>
-                        <h4 className="price">
-                          150 <span>Tk/day</span>
-                        </h4>
-                      </div>
-                      <div className="delete_btn">
-                        <button>Delete Ad ??</button>
+                products
+                  .slice(0)
+                  .reverse()
+                  .map((item, i) => (
+                    <div className="post_item_link" key={i}>
+                      <div className="post_item">
+                        <div className="img">
+                          <img src={item?.images[0]?.url} alt={item?.title} />
+                        </div>
+                        <div className="text">
+                          <h3>{item?.title}</h3>
+                          <p>
+                            <i className="fa-solid fa-location-dot"></i>{" "}
+                            {item?.division}
+                            {item?.state && ","} {item?.state}
+                          </p>
+                          <h4 className="price">
+                            {item?.damageWaiver} <span>Tk/day</span>
+                          </h4>
+                        </div>
+                        <div
+                          className="delete_btn"
+                          onClick={() => {
+                            handleDeleteProduct(item?._id, item);
+                          }}
+                        >
+                          <button>Delete Ad ??</button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
             </div>
           </div>
         </div>

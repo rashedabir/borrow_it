@@ -1556,8 +1556,9 @@ p {
   padding: 50px 0;
 }
 
-.add_img input[type="file"] {
-  display: none;
+#add_post .images {
+  display: flex;
+  gap: 20px;
 }
 
 .add_img label {
@@ -1586,7 +1587,7 @@ p {
 }
 
 #add_post .category {
-  margin-top: 40px;
+  margin-top: 25px;
 }
 
 #add_post .category label {
@@ -1972,4 +1973,87 @@ p {
   line-height: 24px;
   font-family: "Open Sans", sans-serif;
   margin-top: 30px;
+}
+
+/*-----------------------------------upload image-------------------------------*/
+
+.upload {
+  height: 130px;
+  width: 130px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  position: relative;
+  margin-bottom: 15px;
+}
+.profile_upload {
+  height: 300px;
+  width: 100%;
+  border: 1px solid #ddd;
+  position: relative;
+  margin-bottom: 15px;
+  text-align: center;
+  margin: auto;
+}
+#file_up {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  outline: none;
+}
+#file_up::before {
+  content: "+";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: rgb(242, 242, 242);
+  color: #ffce32;
+  font-size: 4rem;
+  cursor: pointer;
+  text-align: center;
+}
+#file_img {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: white;
+}
+#file_img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+#file_img span {
+  position: absolute;
+  top: -13px;
+  right: -13px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-weight: 800;
+  color: crimson;
+}
+.upload span {
+  position: absolute;
+  top: -13px;
+  right: -13px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-weight: 800;
+  color: crimson;
+}
+.load_more {
+  justify-content: center;
+  text-align: center;
+  margin: auto;
+  padding-bottom: 50px;
 }
