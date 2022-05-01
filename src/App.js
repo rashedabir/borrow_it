@@ -17,6 +17,9 @@ import {
 import { useUserActions } from "./_recoil/actions";
 import { authAtom } from "./_recoil/state";
 import "./App.css";
+import axios from "axios";
+
+axios.defaults.withCredentials = true;
 
 function App() {
   const userAction = useUserActions();
