@@ -1,9 +1,11 @@
 import React from "react";
-import categories from "../../../assets/fakeData/categories.json";
-import image from "../../../assets/images/wristwatch.png";
 import { Link } from "react-router-dom";
+import { useRecoilValue } from "recoil";
+import { categoryAtom } from "../../../_recoil/state";
 
 export const BrowseByCategory = () => {
+  const categories = useRecoilValue(categoryAtom);
+
   return (
     <section id="category">
       <div className="container">
@@ -15,10 +17,10 @@ export const BrowseByCategory = () => {
               categories.length > 0 &&
               categories.map((item, i) => (
                 <li key={i}>
-                  <Link to={`/category-details/${i}`}>
-                    <img src={image} alt={item.name} />
+                  <Link to={`/category-details/${item?.slug}`}>
+                    <img src={item?.image?.url} alt={item.name} />
                     <h3>{item.name}</h3>
-                    <p>{item.total} ads</p>
+                    <p>{item.totalProduct} ads</p>
                   </Link>
                 </li>
               ))}

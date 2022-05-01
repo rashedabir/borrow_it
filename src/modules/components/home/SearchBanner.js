@@ -1,10 +1,59 @@
-import React, { useState } from "react";
-import location from "../../../assets/fakeData/state.json";
+import React, { useEffect, useState } from "react";
+import { useCategoryActions } from "../../../_recoil/actions";
+import API from "../../../utils/devApi";
 
 export const SearchBanner = () => {
+  const categoryActions = useCategoryActions();
   const [cities, setCities] = useState({});
+  const [search, setSearch] = useState("");
   const [selectedState, setSelectedState] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
+  const [division, setDivision] = useState([]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    categoryActions.getCategory(search, selectedState, selectedCity);
+  };
+
+  // fetch state
+  const getState = async (id) => {
+    await API.get(`/api/district/${id}`).then((res) => {
+      if (res.status === 200) {
+        const { data } = res;
+
+        setCities(() =>
+          data.map((item) => {
+            return {
+              value: item.id,
+              label: item.name,
+            };
+          })
+        );
+      }
+    });
+  };
+
+  useEffect(() => {
+    // fetch division
+    const getDivision = async () => {
+      await API.get("/api/division").then((res) => {
+        if (res.status === 200) {
+          const { data } = res;
+          setDivision(() =>
+            data.map((item) => {
+              return {
+                value: item.id,
+                label: item.name,
+              };
+            })
+          );
+        }
+      });
+    };
+
+    // callback
+    getDivision();
+  }, []);
 
   return (
     <section id="banner_start">
@@ -35,6 +84,8 @@ export const SearchBanner = () => {
           className="modal fade"
           id="exampleModal"
           tabIndex="-1"
+          data-bs-keyboard="false"
+          data-bs-backdrop="static"
           aria-labelledby="exampleModalLabel"
           aria-hidden="true"
         >
@@ -79,141 +130,40 @@ export const SearchBanner = () => {
                       role="tablist"
                       aria-orientation="vertical"
                     >
-                      {location &&
-                        location.length > 0 &&
-                        location.map((item, i) => (
+                      {division &&
+                        division.length > 0 &&
+                        division.map((item, i) => (
                           <button
                             key={i}
                             className={i === 0 ? "nav-link" : "nav-link"}
-                            id={`${item.stateName}-tab`}
+                            id={`${item.label}-tab`}
                             data-bs-toggle="pill"
-                            data-bs-target={`#${item.stateName}`}
+                            data-bs-target={`#${item.label}`}
                             type="button"
                             role="tab"
-                            aria-controls={item.stateName}
+                            aria-controls={item.label}
                             aria-selected="true"
-                            onClick={() => {
+                            onClick={async () => {
                               setSelectedCity("");
-                              setCities(item);
-                              setSelectedState(item.stateName);
+                              setCities([]);
+                              await getState(item.value);
+                              setSelectedState(item.label);
+                              categoryActions.getCategory(
+                                search,
+                                item.label,
+                                false
+                              );
                             }}
                           >
-                            {item.stateName}{" "}
+                            {item.label}{" "}
                             <i className="fa-solid fa-angle-right"></i>
                           </button>
                         ))}
-                      <p className="divisions">
-                        Divisions <i className="fa-solid fa-angle-down"></i>
-                      </p>
-                      <button
-                        className="nav-link"
-                        id="v-pills-settings-tab_9"
-                        data-bs-toggle="pill"
-                        data-bs-target="#v-pills-settings_9"
-                        type="button"
-                        role="tab"
-                        aria-controls="v-pills-settings_9"
-                        aria-selected="false"
-                      >
-                        Dhaka Division{" "}
-                        <i className="fa-solid fa-angle-right"></i>
-                      </button>
-                      <button
-                        className="nav-link"
-                        id="v-pills-settings-tab_10"
-                        data-bs-toggle="pill"
-                        data-bs-target="#v-pills-settings_10"
-                        type="button"
-                        role="tab"
-                        aria-controls="v-pills-settings_10"
-                        aria-selected="false"
-                      >
-                        Chattogram Division
-                        <i className="fa-solid fa-angle-right"></i>
-                      </button>
-                      <button
-                        className="nav-link"
-                        id="v-pills-settings-tab_11"
-                        data-bs-toggle="pill"
-                        data-bs-target="#v-pills-settings_11"
-                        type="button"
-                        role="tab"
-                        aria-controls="v-pills-settings_11"
-                        aria-selected="false"
-                      >
-                        Sylhet Division
-                        <i className="fa-solid fa-angle-right"></i>
-                      </button>
-                      <button
-                        className="nav-link"
-                        id="v-pills-settings-tab_12"
-                        data-bs-toggle="pill"
-                        data-bs-target="#v-pills-settings_12"
-                        type="button"
-                        role="tab"
-                        aria-controls="v-pills-settings_12"
-                        aria-selected="false"
-                      >
-                        Khulna Division{" "}
-                        <i className="fa-solid fa-angle-right"></i>
-                      </button>
-                      <button
-                        className="nav-link"
-                        id="v-pills-settings-tab_13"
-                        data-bs-toggle="pill"
-                        data-bs-target="#v-pills-settings_13"
-                        type="button"
-                        role="tab"
-                        aria-controls="v-pills-settings_13"
-                        aria-selected="false"
-                      >
-                        Rajshahi Division
-                        <i className="fa-solid fa-angle-right"></i>
-                      </button>
-                      <button
-                        className="nav-link"
-                        id="v-pills-settings-tab_14"
-                        data-bs-toggle="pill"
-                        data-bs-target="#v-pills-settings_14"
-                        type="button"
-                        role="tab"
-                        aria-controls="v-pills-settings_14"
-                        aria-selected="false"
-                      >
-                        Rangpur Division{" "}
-                        <i className="fa-solid fa-angle-right"></i>
-                      </button>
-                      <button
-                        className="nav-link"
-                        id="v-pills-settings-tab_15"
-                        data-bs-toggle="pill"
-                        data-bs-target="#v-pills-settings_15"
-                        type="button"
-                        role="tab"
-                        aria-controls="v-pills-settings_15"
-                        aria-selected="false"
-                      >
-                        Barishal Division
-                        <i className="fa-solid fa-angle-right"></i>
-                      </button>
-                      <button
-                        className="nav-link"
-                        id="v-pills-settings-tab_16"
-                        data-bs-toggle="pill"
-                        data-bs-target="#v-pills-settings_16"
-                        type="button"
-                        role="tab"
-                        aria-controls="v-pills-settings_16"
-                        aria-selected="false"
-                      >
-                        Mymensingh Division
-                        <i className="fa-solid fa-angle-right"></i>
-                      </button>
                     </div>
                   </div>
 
                   <div className="col-lg-6">
-                    {cities && Object.keys(cities).length > 0 && (
+                    {cities && cities.length > 0 && (
                       <div
                         className="tab-content popular_arieas"
                         id="v-pills-tabContent"
@@ -225,17 +175,21 @@ export const SearchBanner = () => {
                           aria-labelledby={`${cities.stateName}-tab`}
                         >
                           <ul>
-                            <li>All of {selectedState}</li>
-                            {cities.cities &&
-                              cities.cities.length > 0 &&
-                              cities.cities.map((item, i, row) => (
+                            {cities &&
+                              cities.length > 0 &&
+                              cities.map((item, i, row) => (
                                 <li
                                   key={i}
                                   onClick={() => {
-                                    setSelectedCity(item.cityName);
+                                    setSelectedCity(item.label);
+                                    categoryActions.getCategory(
+                                      search,
+                                      selectedState,
+                                      item.label
+                                    );
                                   }}
                                 >
-                                  {item.cityName}
+                                  {item.label}
                                 </li>
                               ))}
                           </ul>
@@ -250,9 +204,17 @@ export const SearchBanner = () => {
         </div>
 
         <div className="serach_bar">
-          <form action="">
-            <input type="text" placeholder="What are you looking for?" />
-            <button>
+          <form>
+            <input
+              type="text"
+              onBlur={handleSubmit}
+              onChange={(e) => {
+                setSearch(e.target.value);
+              }}
+              placeholder="What are you looking for?"
+              value={search}
+            />
+            <button onClick={handleSubmit}>
               <i className="fa-solid fa-magnifying-glass"></i>
             </button>
           </form>
