@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import { useUserActions } from "../../../_recoil/actions";
+import login from "../../../assets/images/add-login.png";
+import view from "../../../assets/images/view .png";
+import manage from "../../../assets/images/manage.png";
 
 const init = {
   name: "",
@@ -16,8 +19,10 @@ export const Login = () => {
 
   // Validation schema
   const validationSchema = Yup.object().shape({
-    email: Yup.string().required("Email is required"),
-    password: Yup.string().required("Password is required"),
+    email: Yup.string().email().required("Email is required"),
+    password: Yup.string()
+      .required("Password is required")
+      .min(6, "Password is too short - should be 6 chars minimum."),
   });
 
   return (
@@ -51,15 +56,15 @@ export const Login = () => {
               <div className="col-lg-5">
                 <ul>
                   <li>
-                    <img src="images/add-login.png" alt="" />
+                    <img src={login} alt="" />
                     Start posting your own ads.
                   </li>
                   <li>
-                    <img src="images/view .png" alt="" />
+                    <img src={view} alt="" />
                     Mark ads as favorite and view them later.
                   </li>
                   <li>
-                    <img src="images/manage.png" alt="" />
+                    <img src={manage} alt="" />
                     View and manage your ads at your convenience.
                   </li>
                 </ul>

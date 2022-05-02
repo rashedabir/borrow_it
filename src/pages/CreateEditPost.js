@@ -303,16 +303,30 @@ export const CreateEditPost = () => {
                       </div>
                       <div className="price">
                         <label>price (Tk)</label>
-                        <Field name="price" type="number" placeholder="Price" />
+                        <input
+                          onChange={(e) => {
+                            setFieldValue("price", e.target.value);
+                          }}
+                          value={values.price ?? ""}
+                          name="price"
+                          type="number"
+                          placeholder="Price"
+                          onWheel={() => document.activeElement.blur()}
+                        />
                         {errors?.price && touched?.price && (
                           <div className="invalid-feedback">{errors.price}</div>
                         )}
                       </div>
                       <div className="price">
                         <label>Damage Waiver (Tk)</label>
-                        <Field
+                        <input
+                          onChange={(e) => {
+                            setFieldValue("damageWaiver", e.target.value);
+                          }}
+                          value={values.damageWaiver ?? ""}
                           name="damageWaiver"
                           type="number"
+                          onWheel={() => document.activeElement.blur()}
                           placeholder="Damage Waiver cost"
                         />
                         {errors?.damageWaiver && touched?.damageWaiver && (
@@ -476,11 +490,16 @@ export const CreateEditPost = () => {
                       <div className="main">
                         <div className="mb-3 left">
                           <label className="form-label">Phone-1</label>
-                          <Field
+                          <input
                             type="number"
                             className="form-control"
                             name="phone1"
                             placeholder="Enter Your Phone Number"
+                            value={values.phone1 ?? ""}
+                            onChange={(e) => {
+                              setFieldValue("phone1", e.target.value);
+                            }}
+                            onWheel={() => document.activeElement.blur()}
                           />
                           {errors?.phone1 && touched?.phone1 && (
                             <div className="invalid-feedback">
@@ -490,11 +509,16 @@ export const CreateEditPost = () => {
                         </div>
                         <div className="mb-3 right">
                           <label className="form-label">Phone-2</label>
-                          <Field
+                          <input
+                            onChange={(e) => {
+                              setFieldValue("phone2", e.target.value);
+                            }}
+                            value={values.phone2 ?? ""}
                             type="number"
                             className="form-control"
                             name="phone2"
                             placeholder="Enter Your Phone Number"
+                            onWheel={() => document.activeElement.blur()}
                           />
                         </div>
                       </div>

@@ -1,7 +1,11 @@
+/* eslint-disable no-useless-escape */
 import React, { useState } from "react";
 import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import { useUserActions } from "../../../_recoil/actions";
+import login from "../../../assets/images/add-login.png";
+import view from "../../../assets/images/view .png";
+import manage from "../../../assets/images/manage.png";
 
 const init = {
   name: "",
@@ -17,8 +21,14 @@ export const Registration = () => {
   // Validation schema
   const validationSchema = Yup.object().shape({
     name: Yup.string().required("Name is required"),
-    email: Yup.string().required("Email is required"),
-    password: Yup.string().required("Password is required"),
+    email: Yup.string().email().required("Email is required"),
+    password: Yup.string()
+      .required("Password is required")
+      .min(6, "Password is too short - should be 6 chars minimum.")
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
+        "Must Contain 6 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character"
+      ),
     rePassword: Yup.string().oneOf(
       [Yup.ref("password"), null],
       "Passwords must match"
@@ -56,15 +66,15 @@ export const Registration = () => {
               <div className="col-lg-5">
                 <ul>
                   <li>
-                    <img src="images/add-login.png" alt="" />
+                    <img src={login} alt="" />
                     Start posting your own ads.
                   </li>
                   <li>
-                    <img src="images/view .png" alt="" />
+                    <img src={view} alt="" />
                     Mark ads as favorite and view them later.
                   </li>
                   <li>
-                    <img src="images/manage.png" alt="" />
+                    <img src={manage} alt="" />
                     View and manage your ads at your convenience.
                   </li>
                 </ul>

@@ -53,6 +53,7 @@ function App() {
             element={<ProductDetails />}
           />
           <Route path="/category-details/:slug" element={<CategoryDetails />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </MainLayout>
     </BrowserRouter>

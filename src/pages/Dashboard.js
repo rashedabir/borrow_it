@@ -87,6 +87,13 @@ export const Dashboard = () => {
                   <div className="add_post_btn">
                     <Link to="/create-post">Post your ad now!</Link>
                   </div>
+                  <button
+                    data-bs-target="#new_pass_start"
+                    data-bs-toggle="modal"
+                    className="btn btn-outline-danger mt-4"
+                  >
+                    <i className="fa-solid fa-gears me-2"></i>Account Settings
+                  </button>
                 </div>
 
                 <div className="col-lg-8">

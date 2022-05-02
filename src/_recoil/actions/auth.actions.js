@@ -2,6 +2,7 @@ import { toast } from "react-toastify";
 import { useSetRecoilState } from "recoil";
 import API from "../../utils/devApi";
 import { authAtom } from "../state";
+import { swalSuccess } from "../../utils/swal";
 
 export function useUserActions() {
   const setAuth = useSetRecoilState(authAtom);
@@ -11,6 +12,7 @@ export function useUserActions() {
     login,
     getProfile,
     logout,
+    changePassword,
   };
 
   // sign up action
@@ -38,6 +40,20 @@ export function useUserActions() {
           toast.success("Wellcome");
           localStorage.setItem("token", accessToken);
           window.location.href = "/dashboard";
+        }
+      })
+      .catch((error) => {
+        toast.error(error.response.data.msg);
+      });
+  }
+
+  // password change action
+  async function changePassword(payload, action) {
+    await API.post("/user/change-password", payload)
+      .then((res) => {
+        if (res.status === 200) {
+          action.resetForm();
+          swalSuccess("Password Change");
         }
       })
       .catch((error) => {

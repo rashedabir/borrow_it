@@ -50,7 +50,7 @@ export const Navbar = () => {
           {profileInfo ? (
             <>
               <Link className="menu_btn menu_btn2" to="/dashboard">
-                Dashboard
+                <i className="fa-solid fa-user"></i> My Account
               </Link>
               <div
                 className="menu_btn"

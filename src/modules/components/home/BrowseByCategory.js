@@ -12,7 +12,7 @@ export const BrowseByCategory = () => {
       <div className="container">
         <h2>Browse items by category</h2>
 
-        {categories && categories.length === 0 ? (
+        {!categories || categories.length === 0 ? (
           <div className="row pt-5">
             {new Array(12).fill().map((item, i) => (
               <div className="col-lg-3 mb-3" key={i}>

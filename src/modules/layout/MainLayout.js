@@ -5,6 +5,7 @@ import {
   Login,
   Navbar,
   Registration,
+  SetNewPassword,
   VarifyPassword,
 } from "../components";
 
@@ -16,6 +17,7 @@ const MainLayout = ({ children }) => {
       <Login />
       <ForgotPassword />
       <VarifyPassword />
+      <SetNewPassword />
       {children}
       <Footer />
     </div>
