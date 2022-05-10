@@ -6,4 +6,5 @@ export { Terms } from "./Terms";
 export { SafetyTips } from "./SafetyTips";
 export { Dashboard } from "./Dashboard";
 export { CreateEditPost } from "./CreateEditPost";
+export { Products } from "./Products";
 export { NotFound } from "./NotFound";

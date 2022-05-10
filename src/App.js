@@ -11,6 +11,7 @@ import {
   NotFound,
   Privacy,
   ProductDetails,
+  Products,
   SafetyTips,
   Terms,
 } from "./pages";
@@ -50,6 +51,7 @@ function App() {
             element={<ProductDetails />}
           />
           <Route path="/category-details/:slug" element={<CategoryDetails />} />
+          <Route path="/products" element={<Products />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </MainLayout>

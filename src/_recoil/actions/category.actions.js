@@ -10,20 +10,14 @@ export function useCategoryActions() {
   };
 
   // get auth profile data
-  async function getCategory(
-    title = false,
-    division = false,
-    district = false
-  ) {
+  async function getCategory(division = false, district = false) {
     let url = "/api/product?limit=16";
-    if (division && !district && !title) {
+    if (division && !district) {
       url = `/api/product?limit=16&division=${division}`;
-    } else if (division && district && !title) {
+    } else if (!division && district) {
+      url = `/api/product?limit=16&state=${district}`;
+    } else if (division && district) {
       url = `/api/product?limit=16&division=${division}&state=${district}`;
-    } else if (title && !division && !district) {
-      url = `/api/product?limit=16&title[regex]=${title}`;
-    } else if (title && division && district) {
-      url = `/api/product?limit=16&division=${division}&state=${district}&title[regex]=${title}`;
     }
     await API.get(url)
       .then((res) => {

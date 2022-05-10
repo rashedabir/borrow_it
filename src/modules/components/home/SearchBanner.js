@@ -1,18 +1,28 @@
 import React, { useEffect, useState } from "react";
-import { useCategoryActions } from "../../../_recoil/actions";
+import {
+  useCategoryActions,
+  useProductActions,
+} from "../../../_recoil/actions";
 import API from "../../../utils/devApi";
+import { useNavigate } from "react-router-dom";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { productAtom } from "../../../_recoil/state";
 
 export const SearchBanner = () => {
+  const navigate = useNavigate();
   const categoryActions = useCategoryActions();
+  const productActions = useProductActions();
+  const setProduct = useSetRecoilState(productAtom);
+  const products = useRecoilValue(productAtom);
   const [cities, setCities] = useState({});
-  const [search, setSearch] = useState("");
   const [selectedState, setSelectedState] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
   const [division, setDivision] = useState([]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    categoryActions.getCategory(search, selectedState, selectedCity);
+    productActions.getProduct();
+    navigate(`/products`);
   };
 
   // fetch state
@@ -148,11 +158,7 @@ export const SearchBanner = () => {
                               setCities([]);
                               await getState(item.value);
                               setSelectedState(item.label);
-                              categoryActions.getCategory(
-                                search,
-                                item.label,
-                                false
-                              );
+                              categoryActions.getCategory(item.label, false);
                             }}
                           >
                             {item.label}{" "}
@@ -179,11 +185,12 @@ export const SearchBanner = () => {
                               cities.length > 0 &&
                               cities.map((item, i, row) => (
                                 <li
+                                  data-bs-dismiss="modal"
+                                  aria-label="Close"
                                   key={i}
                                   onClick={() => {
                                     setSelectedCity(item.label);
                                     categoryActions.getCategory(
-                                      search,
                                       selectedState,
                                       item.label
                                     );
@@ -207,12 +214,15 @@ export const SearchBanner = () => {
           <form>
             <input
               type="text"
-              onBlur={handleSubmit}
+              // onBlur={handleSubmit}
+              value={products?.search ?? ""}
               onChange={(e) => {
-                setSearch(e.target.value);
+                setProduct((prev) => ({
+                  ...prev,
+                  search: e.target.value,
+                }));
               }}
               placeholder="What are you looking for?"
-              value={search}
             />
             <button onClick={handleSubmit}>
               <i className="fa-solid fa-magnifying-glass"></i>
