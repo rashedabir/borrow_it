@@ -1,45 +1,52 @@
+/* eslint-disable no-useless-escape */
 import React, { useState } from "react";
-import { Field, Form, Formik } from "formik";
-import * as Yup from "yup";
-import { useUserActions } from "../../../_recoil/actions";
-import loginimg from "../../../assets/images/add-login.png";
+import login from "../../../assets/images/add-login.png";
 import view from "../../../assets/images/view .png";
 import manage from "../../../assets/images/manage.png";
+import { Field, Form, Formik } from "formik";
+import * as Yup from "yup";
+import useUserActions from "../../../_recoil/actions/auth.actions";
 import { Modal } from "react-bootstrap";
 
 const init = {
-  name: "",
-  email: "",
-  password: "",
-  rePassword: "",
+  currentPassword: "",
+  newPassword: "",
+  confirmPassword: "",
 };
 
-export const Login = ({ login, setLogin, setForgot }) => {
+export const SetForgotPassword = ({ setUpdatePass, updatePass }) => {
   const userAction = useUserActions();
   const [loading, setLoading] = useState(false);
 
-  const handleClose = () => setLogin(false);
+  const handleClose = () => setUpdatePass(false);
 
   // Validation schema
   const validationSchema = Yup.object().shape({
-    email: Yup.string().email().required("Email is required"),
-    password: Yup.string()
+    currentPassword: Yup.string().required("Current Password is required"),
+    newPassword: Yup.string()
       .required("Password is required")
-      .min(6, "Password is too short - should be 6 chars minimum."),
+      .min(6, "Password is too short - should be 6 chars minimum.")
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
+        "Must Contain 6 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character"
+      ),
+    confirmPassword: Yup.string().oneOf(
+      [Yup.ref("newPassword"), null],
+      "Passwords must match"
+    ),
   });
-
   return (
     <Modal
-      className="modal fade"
+      show={updatePass}
+      onHide={handleClose}
       size="lg"
-      id="staticLogin"
+      className="modal fade"
+      id="new_pass_start"
       data-bs-backdrop="static"
       data-bs-keyboard="false"
       tabIndex="-1"
       aria-labelledby="staticBackdropLabel"
       aria-hidden="true"
-      show={login}
-      onHide={handleClose}
     >
       <div id="login_modal">
         <div className="modal-content">
@@ -47,7 +54,7 @@ export const Login = ({ login, setLogin, setForgot }) => {
             <h3>
               Welcome to <span>Borrow it</span>
             </h3>
-            <p>Log in to manage your account.</p>
+            <p>Change Password to Manage Your Account.</p>
             <button
               type="button"
               className="btn-close"
@@ -63,7 +70,7 @@ export const Login = ({ login, setLogin, setForgot }) => {
               <div className="col-lg-5">
                 <ul>
                   <li>
-                    <img src={loginimg} alt="" />
+                    <img src={login} alt="" />
                     Start posting your own ads.
                   </li>
                   <li>
@@ -82,10 +89,11 @@ export const Login = ({ login, setLogin, setForgot }) => {
                     initialValues={init}
                     enableReinitialize={true}
                     validationSchema={validationSchema}
-                    onSubmit={(values) => {
+                    onSubmit={(values, action) => {
                       setLoading(true);
-                      userAction.login(values);
+                      userAction.changePassword(values, action);
                       setLoading(false);
+                      setUpdatePass(false);
                     }}
                   >
                     {({
@@ -96,62 +104,68 @@ export const Login = ({ login, setLogin, setForgot }) => {
                       touched,
                     }) => {
                       return (
-                        <Form id="rony" className="needs-validation">
+                        <Form action="#" id="rony">
                           <div className="form-floating mb-3">
                             <Field
-                              type="email"
+                              type="password"
+                              name="currentPassword"
                               className="form-control"
                               id="floatingInput"
-                              name="email"
                               placeholder="name@example.com"
-                              autoComplete="off"
                             />
-                            <label htmlFor="floatingInput">Email</label>
-                            {errors?.email && touched?.email && (
+                            <label htmlFor="floatingInput">
+                              Enter Your Current Password
+                            </label>
+                            {errors?.currentPassword &&
+                              touched?.currentPassword && (
+                                <div className="invalid-feedback">
+                                  {errors.currentPassword}
+                                </div>
+                              )}
+                          </div>
+                          <div className="form-floating mb-3">
+                            <Field
+                              type="password"
+                              name="newPassword"
+                              className="form-control"
+                              id="floatingInput"
+                              placeholder="name@example.com"
+                            />
+                            <label htmlFor="floatingInput">
+                              Enter Your New Password
+                            </label>
+                            {errors?.newPassword && touched?.newPassword && (
                               <div className="invalid-feedback">
-                                {errors.email}
+                                {errors.newPassword}
                               </div>
                             )}
                           </div>
                           <div className="form-floating mb-3">
                             <Field
                               type="password"
-                              name="password"
+                              name="confirmPassword"
                               className="form-control"
-                              id="floatingPassword"
-                              placeholder="Password"
-                              autoComplete="off"
+                              id="floatingInput"
+                              placeholder="name@example.com"
                             />
-                            <label htmlFor="floatingPassword">Password</label>
-                            {errors?.password && touched?.password && (
-                              <div className="invalid-feedback">
-                                {errors.password}
-                              </div>
-                            )}
+                            <label htmlFor="floatingInput">
+                              Confirm New Password
+                            </label>
+                            {errors?.confirmPassword &&
+                              touched?.confirmPassword && (
+                                <div className="invalid-feedback">
+                                  {errors.confirmPassword}
+                                </div>
+                              )}
                           </div>
                           <button
-                            className="me-2"
-                            disabled={loading}
                             onClick={() => {
                               handleSubmit();
                             }}
-                            type="button"
-                          >
-                            login
-                          </button>
-
-                          <button
-                            type="button"
-                            data-bs-toggle="modal"
-                            data-bs-target="#staticForgot"
-                            className="ms-2"
                             disabled={loading}
-                            onClick={() => {
-                              setLogin(false);
-                              setForgot(true);
-                            }}
+                            type="button"
                           >
-                            Forgot password?
+                            Update
                           </button>
                         </Form>
                       );
@@ -167,4 +181,4 @@ export const Login = ({ login, setLogin, setForgot }) => {
   );
 };
 
-export default Login;
+export default SetForgotPassword;

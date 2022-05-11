@@ -1,8 +1,46 @@
-import React from "react";
+import Cookies from "js-cookie";
+import React, { useState } from "react";
+import { Modal } from "react-bootstrap";
+import API from "../../../utils/devApi";
+import { swalError } from "../../../utils/swal";
+import loginimg from "../../../assets/images/add-login.png";
+import view from "../../../assets/images/view .png";
+import manage from "../../../assets/images/manage.png";
 
-export const VarifyPassword = () => {
+export const VarifyPassword = ({ verify, setVerify, setNewPass }) => {
+  const [token, setToken] = useState("");
+  const [loading, setLoading] = useState(false);
+  const email = Cookies.get("email");
+
+  const handleClose = () => {
+    setVerify(false);
+    Cookies.remove("email");
+  };
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    await API.post("/user/verify-token", {
+      token: parseInt(token),
+      email: email,
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          setLoading(false);
+          setVerify(false);
+          setNewPass(true);
+        }
+      })
+      .catch((error) => {
+        swalError(error.response.data.msg);
+        setLoading(false);
+      });
+    setLoading(false);
+  };
+
   return (
-    <div
+    <Modal
+      size="lg"
+      show={verify}
       className="modal fade"
       id="vefirify_pass_code"
       data-bs-backdrop="static"
@@ -10,8 +48,9 @@ export const VarifyPassword = () => {
       tabIndex="-1"
       aria-labelledby="staticBackdropLabel"
       aria-hidden="true"
+      onHide={handleClose}
     >
-      <div className="modal-dialog" id="login_modal">
+      <div id="login_modal">
         <div className="modal-content">
           <div className="modal-header">
             <h3>
@@ -23,6 +62,11 @@ export const VarifyPassword = () => {
               className="btn-close"
               data-bs-dismiss="modal"
               aria-label="Close"
+              onClick={() => {
+                Cookies.set("email", "");
+                setVerify(false);
+              }}
+              disabled={loading}
             >
               <i className="fa-solid fa-xmark"></i>
             </button>
@@ -32,15 +76,15 @@ export const VarifyPassword = () => {
               <div className="col-lg-5">
                 <ul>
                   <li>
-                    <img src="images/add-login.png" alt="" />
+                    <img src={loginimg} alt="" />
                     Start posting your own ads.
                   </li>
                   <li>
-                    <img src="images/view .png" alt="" />
+                    <img src={view} alt="" />
                     Mark ads as favorite and view them later.
                   </li>
                   <li>
-                    <img src="images/manage.png" alt="" />
+                    <img src={manage} alt="" />
                     View and manage your ads at your convenience.
                   </li>
                 </ul>
@@ -50,18 +94,23 @@ export const VarifyPassword = () => {
                   <form action="#" id="rony">
                     <div className="form-floating mb-3">
                       <input
-                        type="email"
+                        type="number"
                         className="form-control"
                         id="floatingInput"
                         placeholder="name@example.com"
+                        onChange={(e) => {
+                          setToken(e.target.value);
+                        }}
                       />
                       <label htmlFor="floatingInput">Enter Your Code</label>
                     </div>
 
                     <button
-                      type="submit"
+                      type="button"
                       data-bs-toggle="modal"
-                      data-bs-target="#new_pass_start"
+                      data-bs-target="#set_forgot_password"
+                      onClick={handleSubmit}
+                      disabled={loading}
                     >
                       Send
                     </button>
@@ -72,7 +121,7 @@ export const VarifyPassword = () => {
           </div>
         </div>
       </div>
-    </div>
+    </Modal>
   );
 };
 

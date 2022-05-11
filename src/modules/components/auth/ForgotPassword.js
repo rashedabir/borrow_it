@@ -1,8 +1,44 @@
-import React from "react";
+import React, { useState } from "react";
+import { toast } from "react-toastify";
+import API from "../../../utils/devApi";
+import Cookies from "js-cookie";
+import { Modal } from "react-bootstrap";
+import loginimg from "../../../assets/images/add-login.png";
+import view from "../../../assets/images/view .png";
+import manage from "../../../assets/images/manage.png";
 
-export const ForgotPassword = () => {
+export const ForgotPassword = ({ setForgot, forgot, setVerify }) => {
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleClose = () => {
+    setForgot(false);
+    Cookies.remove("email");
+  };
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    await API.patch("/user/generate-token", {
+      email: email,
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          Cookies.set("email", email);
+          setForgot(false);
+          setVerify(true);
+          setLoading(false);
+        }
+      })
+      .catch((error) => {
+        toast.error(error.response.data.msg);
+        setLoading(false);
+      });
+    setLoading(false);
+  };
+
   return (
-    <div
+    <Modal
+      show={forgot}
       className="modal fade"
       id="staticForgot"
       data-bs-backdrop="static"
@@ -10,8 +46,10 @@ export const ForgotPassword = () => {
       tabIndex="-1"
       aria-labelledby="staticBackdropLabel"
       aria-hidden="true"
+      onHide={handleClose}
+      size="lg"
     >
-      <div className="modal-dialog" id="login_modal">
+      <div id="login_modal">
         <div className="modal-content">
           <div className="modal-header">
             <h3>
@@ -23,6 +61,8 @@ export const ForgotPassword = () => {
               className="btn-close"
               data-bs-dismiss="modal"
               aria-label="Close"
+              onClick={handleClose}
+              disabled={loading}
             >
               <i className="fa-solid fa-xmark"></i>
             </button>
@@ -32,15 +72,15 @@ export const ForgotPassword = () => {
               <div className="col-lg-5">
                 <ul>
                   <li>
-                    <img src="images/add-login.png" alt="" />
+                    <img src={loginimg} alt="" />
                     Start posting your own ads.
                   </li>
                   <li>
-                    <img src="images/view .png" alt="" />
+                    <img src={view} alt="" />
                     Mark ads as favorite and view them later.
                   </li>
                   <li>
-                    <img src="images/manage.png" alt="" />
+                    <img src={manage} alt="" />
                     View and manage your ads at your convenience.
                   </li>
                 </ul>
@@ -50,7 +90,11 @@ export const ForgotPassword = () => {
                   <form action="#" id="rony">
                     <div className="form-floating mb-3">
                       <input
+                        onChange={(e) => {
+                          setEmail(e.target.value);
+                        }}
                         type="email"
+                        value={email}
                         className="form-control"
                         id="floatingInput"
                         placeholder="name@example.com"
@@ -59,9 +103,11 @@ export const ForgotPassword = () => {
                     </div>
 
                     <button
-                      type="submit"
+                      type="button"
                       data-bs-toggle="modal"
                       data-bs-target="#vefirify_pass_code"
+                      onClick={handleSubmit}
+                      disabled={loading}
                     >
                       Submit
                     </button>
@@ -72,7 +118,7 @@ export const ForgotPassword = () => {
           </div>
         </div>
       </div>
-    </div>
+    </Modal>
   );
 };
 

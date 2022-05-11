@@ -5,12 +5,14 @@ import { authAtom } from "../_recoil/state";
 import API from "../utils/devApi";
 import { swalConfirm, swalError, swalSuccess } from "../utils/swal";
 import { toast } from "react-toastify";
+import { SetForgotPassword } from "../modules/components";
 
 export const Dashboard = () => {
   const profileInfo = useRecoilValue(authAtom);
   const token = localStorage.getItem("token");
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [updatePass, setUpdatePass] = useState(false);
 
   // delete product image
   const handleDestroy = async (image) => {
@@ -91,11 +93,17 @@ export const Dashboard = () => {
                     data-bs-target="#new_pass_start"
                     data-bs-toggle="modal"
                     className="btn btn-outline-danger mt-4"
+                    onClick={() => {
+                      setUpdatePass(true);
+                    }}
                   >
                     <i className="fa-solid fa-gears me-2"></i>Account Settings
                   </button>
                 </div>
-
+                <SetForgotPassword
+                  setUpdatePass={setUpdatePass}
+                  updatePass={updatePass}
+                />
                 <div className="col-lg-8">
                   <h3>My Post</h3>
                   {products &&

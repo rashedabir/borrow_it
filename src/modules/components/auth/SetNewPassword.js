@@ -1,25 +1,54 @@
 /* eslint-disable no-useless-escape */
-import React, { useState } from "react";
-import login from "../../../assets/images/add-login.png";
-import view from "../../../assets/images/view .png";
-import manage from "../../../assets/images/manage.png";
 import { Field, Form, Formik } from "formik";
+import React, { useState } from "react";
+import { Modal } from "react-bootstrap";
+import { toast } from "react-toastify";
 import * as Yup from "yup";
-import useUserActions from "../../../_recoil/actions/auth.actions";
+import login from "../../../assets/images/add-login.png";
+import manage from "../../../assets/images/manage.png";
+import view from "../../../assets/images/view .png";
+import API from "../../../utils/devApi";
+import { swalSuccess } from "../../../utils/swal";
+import Cookies from "js-cookie";
 
 const init = {
-  currentPassword: "",
   newPassword: "",
   confirmPassword: "",
 };
 
-export const SetNewPassword = () => {
-  const userAction = useUserActions();
+export const SetNewPassword = ({ newPass, setNewPass, setLogin }) => {
   const [loading, setLoading] = useState(false);
+  const email = Cookies.get("email");
+
+  const handleClose = () => setNewPass(false);
+
+  // set forgot password
+  async function forgotPassword(values, action) {
+    setLoading(true);
+    await API.post("/user/forgot-password", {
+      email: email,
+      newPassword: values.newPassword,
+      confirmPassword: values.confirmPassword,
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          action.resetForm();
+          swalSuccess("Password Change");
+          setLoading(false);
+          setNewPass(false);
+          setLogin(true);
+          Cookies.remove("email");
+        }
+      })
+      .catch((error) => {
+        toast.error(error.response.data.msg);
+        setLoading(false);
+      });
+    setLoading(false);
+  }
 
   // Validation schema
   const validationSchema = Yup.object().shape({
-    currentPassword: Yup.string().required("Current Password is required"),
     newPassword: Yup.string()
       .required("Password is required")
       .min(6, "Password is too short - should be 6 chars minimum.")
@@ -32,8 +61,9 @@ export const SetNewPassword = () => {
       "Passwords must match"
     ),
   });
+
   return (
-    <div
+    <Modal
       className="modal fade"
       id="new_pass_start"
       data-bs-backdrop="static"
@@ -41,8 +71,11 @@ export const SetNewPassword = () => {
       tabIndex="-1"
       aria-labelledby="staticBackdropLabel"
       aria-hidden="true"
+      show={newPass}
+      onHide={handleClose}
+      size="lg"
     >
-      <div className="modal-dialog" id="login_modal">
+      <div id="login_modal">
         <div className="modal-content">
           <div className="modal-header">
             <h3>
@@ -54,6 +87,7 @@ export const SetNewPassword = () => {
               className="btn-close"
               data-bs-dismiss="modal"
               aria-label="Close"
+              onClick={handleClose}
             >
               <i className="fa-solid fa-xmark"></i>
             </button>
@@ -83,9 +117,7 @@ export const SetNewPassword = () => {
                     enableReinitialize={true}
                     validationSchema={validationSchema}
                     onSubmit={(values, action) => {
-                      setLoading(true);
-                      userAction.changePassword(values, action);
-                      setLoading(false);
+                      forgotPassword(values, action);
                     }}
                   >
                     {({
@@ -97,24 +129,6 @@ export const SetNewPassword = () => {
                     }) => {
                       return (
                         <Form action="#" id="rony">
-                          <div className="form-floating mb-3">
-                            <Field
-                              type="password"
-                              name="currentPassword"
-                              className="form-control"
-                              id="floatingInput"
-                              placeholder="name@example.com"
-                            />
-                            <label htmlFor="floatingInput">
-                              Enter Your Current Password
-                            </label>
-                            {errors?.currentPassword &&
-                              touched?.currentPassword && (
-                                <div className="invalid-feedback">
-                                  {errors.currentPassword}
-                                </div>
-                              )}
-                          </div>
                           <div className="form-floating mb-3">
                             <Field
                               type="password"
@@ -169,7 +183,7 @@ export const SetNewPassword = () => {
           </div>
         </div>
       </div>
-    </div>
+    </Modal>
   );
 };
 

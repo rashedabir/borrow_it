@@ -4,7 +4,7 @@ import { useRecoilValue } from "recoil";
 import useUserActions from "../../_recoil/actions/auth.actions";
 import { authAtom } from "../../_recoil/state";
 
-export const Navbar = () => {
+export const Navbar = ({ setLogin, setRegister }) => {
   const profileInfo = useRecoilValue(authAtom);
   const userAction = useUserActions();
 
@@ -69,6 +69,9 @@ export const Navbar = () => {
                 className="menu_btn"
                 data-bs-toggle="modal"
                 data-bs-target="#staticBackdrop"
+                onClick={() => {
+                  setRegister(true);
+                }}
               >
                 <i className="fa-solid fa-user-plus"></i> sign up
               </div>
@@ -76,6 +79,9 @@ export const Navbar = () => {
                 className="menu_btn menu_btn2"
                 data-bs-toggle="modal"
                 data-bs-target="#staticLogin"
+                onClick={() => {
+                  setLogin(true);
+                }}
               >
                 <i className="fa-solid fa-right-to-bracket"></i> Log in
               </div>

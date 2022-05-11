@@ -6,6 +6,7 @@ import { useUserActions } from "../../../_recoil/actions";
 import login from "../../../assets/images/add-login.png";
 import view from "../../../assets/images/view .png";
 import manage from "../../../assets/images/manage.png";
+import { Modal } from "react-bootstrap";
 
 const init = {
   name: "",
@@ -14,9 +15,11 @@ const init = {
   rePassword: "",
 };
 
-export const Registration = () => {
+export const Registration = ({ register, setRegister }) => {
   const userAction = useUserActions();
   const [loading, setLoading] = useState(false);
+
+  const handleClose = () => setRegister(false);
 
   // Validation schema
   const validationSchema = Yup.object().shape({
@@ -36,7 +39,10 @@ export const Registration = () => {
   });
 
   return (
-    <div
+    <Modal
+      show={register}
+      size="lg"
+      onHide={handleClose}
       className="modal fade"
       id="staticBackdrop"
       data-bs-backdrop="static"
@@ -45,7 +51,7 @@ export const Registration = () => {
       aria-labelledby="staticBackdropLabel"
       aria-hidden="true"
     >
-      <div className="modal-dialog" id="login_modal">
+      <div id="login_modal">
         <div className="modal-content">
           <div className="modal-header">
             <h3>
@@ -57,6 +63,7 @@ export const Registration = () => {
               className="btn-close"
               data-bs-dismiss="modal"
               aria-label="Close"
+              onClick={handleClose}
             >
               <i className="fa-solid fa-xmark"></i>
             </button>
@@ -186,7 +193,7 @@ export const Registration = () => {
           </div>
         </div>
       </div>
-    </div>
+    </Modal>
   );
 };
 
