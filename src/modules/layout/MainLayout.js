@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import {
+  ActiveAccount,
   Footer,
   ForgotPassword,
   Login,
@@ -15,12 +16,22 @@ const MainLayout = ({ children }) => {
   const [forgot, setForgot] = useState(false);
   const [verify, setVerify] = useState(false);
   const [newPass, setNewPass] = useState(false);
+  const [activeAccount, setActiveAccount] = useState(false);
 
   return (
     <div>
       <Navbar setLogin={setLogin} setRegister={setRegister} />
-      <Registration register={register} setRegister={setRegister} />
-      <Login login={login} setLogin={setLogin} setForgot={setForgot} />
+      <Registration
+        setActiveAccount={setActiveAccount}
+        register={register}
+        setRegister={setRegister}
+      />
+      <Login
+        setActiveAccount={setActiveAccount}
+        login={login}
+        setLogin={setLogin}
+        setForgot={setForgot}
+      />
       <ForgotPassword
         forgot={forgot}
         setForgot={setForgot}
@@ -30,6 +41,10 @@ const MainLayout = ({ children }) => {
         verify={verify}
         setVerify={setVerify}
         setNewPass={setNewPass}
+      />
+      <ActiveAccount
+        activeAccount={activeAccount}
+        setActiveAccount={setActiveAccount}
       />
       <SetNewPassword
         setNewPass={setNewPass}

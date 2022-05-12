@@ -3,49 +3,16 @@ import { useSetRecoilState } from "recoil";
 import API from "../../utils/devApi";
 import { authAtom } from "../state";
 import { swalSuccess } from "../../utils/swal";
+import Cookies from "js-cookie";
 
 export function useUserActions() {
   const setAuth = useSetRecoilState(authAtom);
 
   return {
-    registation,
-    login,
     getProfile,
     logout,
     changePassword,
   };
-
-  // sign up action
-  async function registation(payload) {
-    await API.post("/user/register", payload)
-      .then((res) => {
-        if (res.status === 200) {
-          const { accessToken } = res.data;
-          toast.success("Successfully Registered");
-          localStorage.setItem("token", accessToken);
-          window.location.href = "/dashboard";
-        }
-      })
-      .catch((error) => {
-        toast.error(error.response.data.msg);
-      });
-  }
-
-  // login action
-  async function login(payload) {
-    await API.post("/user/login", payload)
-      .then((res) => {
-        if (res.status === 200) {
-          const { accessToken } = res.data;
-          toast.success("Wellcome");
-          localStorage.setItem("token", accessToken);
-          window.location.href = "/dashboard";
-        }
-      })
-      .catch((error) => {
-        toast.error(error.response.data.msg);
-      });
-  }
 
   // password change action
   async function changePassword(payload, action) {
@@ -76,9 +43,14 @@ export function useUserActions() {
 
   // remove user from local storage, set auth state to null and redirect to home page
   async function logout() {
-    localStorage.removeItem("token");
-    setAuth(null);
-    window.location.href = "/";
+    await API.get("/user/logout").then((res) => {
+      if (res.status === 200) {
+        localStorage.removeItem("token");
+        Cookies.remove("refreshToken");
+        setAuth(null);
+        window.location.href = "/";
+      }
+    });
   }
 }
 

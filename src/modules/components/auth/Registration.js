@@ -1,12 +1,14 @@
 /* eslint-disable no-useless-escape */
-import React, { useState } from "react";
 import { Field, Form, Formik } from "formik";
-import * as Yup from "yup";
-import { useUserActions } from "../../../_recoil/actions";
-import login from "../../../assets/images/add-login.png";
-import view from "../../../assets/images/view .png";
-import manage from "../../../assets/images/manage.png";
+import Cookies from "js-cookie";
+import React, { useState } from "react";
 import { Modal } from "react-bootstrap";
+import { toast } from "react-toastify";
+import * as Yup from "yup";
+import login from "../../../assets/images/add-login.png";
+import manage from "../../../assets/images/manage.png";
+import view from "../../../assets/images/view .png";
+import API from "../../../utils/devApi";
 
 const init = {
   name: "",
@@ -15,8 +17,8 @@ const init = {
   rePassword: "",
 };
 
-export const Registration = ({ register, setRegister }) => {
-  const userAction = useUserActions();
+export const Registration = ({ register, setRegister, setActiveAccount }) => {
+  // const userAction = useUserActions();
   const [loading, setLoading] = useState(false);
 
   const handleClose = () => setRegister(false);
@@ -37,6 +39,26 @@ export const Registration = ({ register, setRegister }) => {
       "Passwords must match"
     ),
   });
+
+  const registation = async (payload) => {
+    setLoading(true);
+    await API.post("/user/register", payload)
+      .then((res) => {
+        if (res.status === 200) {
+          Cookies.set("email", payload.email);
+          setLoading(false);
+          setRegister(false);
+          setActiveAccount(true);
+          toast.success("Successfully Registered");
+          toast.info("Token is Sent");
+        }
+      })
+      .catch((error) => {
+        toast.error(error.response.data.msg);
+        setLoading(false);
+      });
+    setLoading(false);
+  };
 
   return (
     <Modal
@@ -93,9 +115,7 @@ export const Registration = ({ register, setRegister }) => {
                     enableReinitialize={true}
                     validationSchema={validationSchema}
                     onSubmit={(values) => {
-                      setLoading(true);
-                      userAction.registation(values);
-                      setLoading(false);
+                      registation(values);
                     }}
                   >
                     {({

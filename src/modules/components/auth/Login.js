@@ -1,11 +1,13 @@
-import React, { useState } from "react";
 import { Field, Form, Formik } from "formik";
-import * as Yup from "yup";
-import { useUserActions } from "../../../_recoil/actions";
-import loginimg from "../../../assets/images/add-login.png";
-import view from "../../../assets/images/view .png";
-import manage from "../../../assets/images/manage.png";
+import Cookies from "js-cookie";
+import React, { useState } from "react";
 import { Modal } from "react-bootstrap";
+import { toast } from "react-toastify";
+import * as Yup from "yup";
+import loginimg from "../../../assets/images/add-login.png";
+import manage from "../../../assets/images/manage.png";
+import view from "../../../assets/images/view .png";
+import API from "../../../utils/devApi";
 
 const init = {
   name: "",
@@ -14,8 +16,8 @@ const init = {
   rePassword: "",
 };
 
-export const Login = ({ login, setLogin, setForgot }) => {
-  const userAction = useUserActions();
+export const Login = ({ login, setLogin, setForgot, setActiveAccount }) => {
+  // const userAction = useUserActions();
   const [loading, setLoading] = useState(false);
 
   const handleClose = () => setLogin(false);
@@ -27,6 +29,28 @@ export const Login = ({ login, setLogin, setForgot }) => {
       .required("Password is required")
       .min(4, "Password is too short - should be 6 chars minimum."),
   });
+
+  // login action
+  const loginHandle = async (payload) => {
+    await API.post("/user/login", payload)
+      .then((res) => {
+        if (res.status === 200) {
+          const { accessToken } = res.data;
+          toast.success("Wellcome");
+          localStorage.setItem("token", accessToken);
+          window.location.href = "/dashboard";
+        }
+      })
+      .catch((error) => {
+        if (error.response.data.msg === "Token Sent") {
+          Cookies.set("email", payload.email);
+          setLogin(false);
+          setActiveAccount(true);
+        } else {
+          toast.error(error.response.data.msg);
+        }
+      });
+  };
 
   return (
     <Modal
@@ -84,7 +108,7 @@ export const Login = ({ login, setLogin, setForgot }) => {
                     validationSchema={validationSchema}
                     onSubmit={(values) => {
                       setLoading(true);
-                      userAction.login(values);
+                      loginHandle(values);
                       setLoading(false);
                     }}
                   >
