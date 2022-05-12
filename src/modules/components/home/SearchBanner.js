@@ -1,28 +1,23 @@
 import React, { useEffect, useState } from "react";
-import {
-  useCategoryActions,
-  useProductActions,
-} from "../../../_recoil/actions";
-import API from "../../../utils/devApi";
 import { useNavigate } from "react-router-dom";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import { productAtom } from "../../../_recoil/state";
+import API from "../../../utils/devApi";
+import { useCategoryActions } from "../../../_recoil/actions";
 
 export const SearchBanner = () => {
   const navigate = useNavigate();
   const categoryActions = useCategoryActions();
-  const productActions = useProductActions();
-  const setProduct = useSetRecoilState(productAtom);
-  const products = useRecoilValue(productAtom);
   const [cities, setCities] = useState({});
   const [selectedState, setSelectedState] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
   const [division, setDivision] = useState([]);
 
+  const [search, setSearch] = useState("");
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    productActions.getProduct();
-    navigate(`/products`);
+    if (search.length > 0) {
+      navigate(`/products?name=${search}`);
+    }
   };
 
   // fetch state
@@ -215,12 +210,9 @@ export const SearchBanner = () => {
             <input
               type="text"
               // onBlur={handleSubmit}
-              value={products?.search ?? ""}
+              // value={products?.search ?? ""}
               onChange={(e) => {
-                setProduct((prev) => ({
-                  ...prev,
-                  search: e.target.value,
-                }));
+                setSearch(e.target.value);
               }}
               placeholder="What are you looking for?"
             />

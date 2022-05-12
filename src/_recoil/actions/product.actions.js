@@ -1,22 +1,19 @@
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import API from "../../utils/devApi";
 import { productAtom } from "../state";
 
 export function useProductActions() {
   const setProduct = useSetRecoilState(productAtom);
-  const products = useRecoilValue(productAtom);
-
-  console.log({ products });
 
   return {
     getProduct,
   };
 
   // get auth profile data
-  async function getProduct() {
+  async function getProduct(search = false) {
     let url = `/api/products?limit=16`;
-    if (products?.search !== undefined) {
-      url = `/api/products?limit=16&title[regex]=${products?.search}`;
+    if (search !== undefined || search !== false) {
+      url = `/api/products?limit=16&title[regex]=${search}`;
     }
     await API.get(url)
       .then((res) => {

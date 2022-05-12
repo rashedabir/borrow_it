@@ -1,42 +1,44 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { Fragment, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import React, { Fragment, useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useRecoilValue } from "recoil";
+import { useQuery } from "../utils";
 import { useProductActions } from "../_recoil/actions";
 import { productAtom } from "../_recoil/state";
 
 export const Products = () => {
+  const navigate = useNavigate();
+  const query = useQuery();
   const products = useRecoilValue(productAtom);
-  const setProduct = useSetRecoilState(productAtom);
   const productActions = useProductActions();
 
+  const [search, setSearch] = useState("");
+
+  const handleSubmit = () => {
+    if (search.length > 0) {
+      navigate(`/products?name=${search}`);
+    }
+  };
+
   useEffect(() => {
-    productActions.getProduct();
-  }, []);
+    productActions.getProduct(query.get("name"));
+  }, [query.get("name")]);
 
   return (
     <Fragment>
       <div id="category_products">
         <div className="container">
           <div className="search_bar">
-            <form action="">
+            <form>
               <input
-                value={products?.search ?? ""}
+                value={search}
                 onChange={(e) => {
-                  setProduct((prev) => ({
-                    ...prev,
-                    search: e.target.value,
-                  }));
+                  setSearch(e.target.value);
                 }}
                 type="text"
                 placeholder="What are you looking for?"
               />
-              <button
-                onClick={() => {
-                  productActions.getProduct();
-                }}
-                type="button"
-              >
+              <button onClick={handleSubmit} type="button">
                 <i className="fa-solid fa-magnifying-glass"></i>
               </button>
             </form>
